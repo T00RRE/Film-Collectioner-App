@@ -17,7 +17,7 @@ function BrowseMovies() {
   const { width } = useWindowSize();
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
-  const slidesToShow = isMobile ? 1 : isTablet? 3 : 5;
+  const slidesToShow = isMobile ? 1 : isTablet ? 2 : 4;
   const slidesToScroll = 1;
   useEffect(() => {
     fetchRecommendedMovies();
@@ -26,7 +26,7 @@ function BrowseMovies() {
   const fetchRecommendedMovies = async () => {
     try {
       setLoadingRecommended(true);
-      const response = await axios.get('http://localhost:5000/api/omdb/recommended?limit=10');
+      const response = await axios.get('/api/omdb/recommended?limit=10');
       setRecommendedMovies(response.data);
     } catch (err) {
       console.error('Błąd pobierania polecanych filmów:', err);
@@ -44,7 +44,7 @@ function BrowseMovies() {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/omdb/search?title=${encodeURIComponent(searchTerm)}`
+        `/api/omdb/search?title=${encodeURIComponent(searchTerm)}`
       );
       
       if (response.data.Search) {
@@ -79,7 +79,7 @@ function BrowseMovies() {
       console.log('Wysyłane dane:', JSON.stringify(movieData));
 
       // Wywołanie API do dodania filmu
-      await axios.post('http://localhost:5000/api/movies', movieData);
+      await axios.post('/api/movies', movieData);
       alert(`Film "${movie.Title}" został dodany do Twojej kolekcji jako ${watched ? 'obejrzany' : 'do obejrzenia'}`);
     } catch (err) {
       console.error('Błąd dodawania filmu:', err);
@@ -94,7 +94,7 @@ function BrowseMovies() {
   const showMovieDetails = async (movie) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/omdb/detail/${movie.imdbID}`);
+      const response = await axios.get(`/api/omdb/detail/${movie.imdbID}`);
       setSelectedMovie(response.data);
     } catch (err) {
       console.error('Błąd pobierania szczegółów filmu:', err);
@@ -112,16 +112,16 @@ function BrowseMovies() {
 
   const nextSlide = () => {
     setCurrentSlide((prev) => {
-     const maxSlide = Math.ceil(recommendedMovies.length - slidesToShow) / slidesToScroll
-     return prev >= maxSlide ? 0 : prev + 1;
-  });
+      const maxSlide = Math.max(0, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll));
+      return prev >= maxSlide ? 0 : prev + 1;
+    });
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) =>{
-      const maxSlide = Math.ceil(recommendedMovies.length - slidesToShow) / slidesToScroll
-      return prev >= maxSlide ? 0 : prev - 1;
-  });
+    setCurrentSlide((prev) => {
+      const maxSlide = Math.max(0, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll));
+      return prev <= 0 ? maxSlide : prev - 1;
+    });
   };
 
   // Funkcja do pobierania koloru gradientu dla każdego polecanego filmu
@@ -147,10 +147,11 @@ function BrowseMovies() {
         textAlign: 'center',
         textShadow: '0 2px 4px rgba(0,0,0,0.3)'
       }}>
+        Przeglądaj Filmy
       </h2>
       
       {/* Slider z polecanymi filmami */}
-      <div style={{ marginBottom: '40px', width: '90%'}}>
+      <div style={{ marginBottom: '40px', width: '90%', margin: '0 auto' }}>
         <h3 style={{ 
           fontSize: '22px', 
           marginBottom: '20px', 
@@ -212,22 +213,27 @@ function BrowseMovies() {
             <div style={{
               display: 'flex',
               overflowX: 'hidden',
-              padding: isMobile ? '15px 40px' : '15px 60px',
-              scrollBehavior: 'smooth',
+              padding: isMobile ? '15px 15px' : '15px 60px',
               scrollBehavior: 'smooth',
               position: 'relative'
             }}>
               <div style={{
                 display: 'flex',
-                transform: `translateX(-${currentSlide * slidesToScroll * (100 / slidesToShow)}%)`,
+                transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
                 transition: 'transform 0.5s ease',
-                gap: isMobile ? '10px' : '20px',
+                gap: isMobile ? '20px' : '20px',
+                width: `${recommendedMovies.length * (100 / slidesToShow)}%`,
+                alignItems: 'center',
+                justifyContent: isMobile ? 'center' : 'flex-start',
               }}>
                 {recommendedMovies.map((movie, index) => (
                   <div key={movie.imdbID} style={{
-                    flex: `0 0 ${isMobile ? '85%' : isTablet ? '33.33%' : '20%'}`,
-                    minWidth: isMobile ? '220px' : '200px',
-                    padding: '0',
+                    flex: `0 0 ${isMobile ? '100%' : isTablet ? '33.33%' : '20%'}`,
+                    boxSizing: 'border-box',
+                    padding: '0 5px',
+                    minWidth: isMobile ? '240px' : '180px',
+                    maxWidth: isMobile ? '320px' : '280px',
+                    margin: isMobile ? '0 auto' : '0',
                   }}>
                     <div style={{
                       background: getRandomGradient(index),
@@ -264,7 +270,7 @@ function BrowseMovies() {
                       
                       <div style={{ 
                         position: 'relative',
-                        height: '280px',
+                        height: isMobile ? '240px' : '280px',
                         overflow: 'hidden',
                         borderTopLeftRadius: '16px',
                         borderTopRightRadius: '16px'
@@ -276,8 +282,10 @@ function BrowseMovies() {
                             style={{ 
                               width:'100%', 
                               height: '100%', 
-                              objectFit: 'cover', 
-                              transition: 'transform 0.5s ease'
+                              objectFit: 'cover',
+                              objectPosition: 'center top',
+                              transition: 'transform 0.5s ease',
+                              imageRendering: 'auto'
                             }}
                             onMouseOver={(e) => {e.currentTarget.style.transform = 'scale(1.05)'}}
                             onMouseOut={(e) => {e.currentTarget.style.transform = 'scale(1)'}}
@@ -470,12 +478,13 @@ function BrowseMovies() {
             
             {/* Wskaźniki slidera (kropki) */}
             <div style={{
-  display: 'flex',
-  justifyContent: 'center',
-  gap: '8px',
-  marginTop: '20px'
-}}>
-  {Array.from({ length: Math.min(Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll) + 1, 5) }).map((_, index) => (
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '8px',
+              marginTop: '20px',
+              flexWrap: 'wrap'
+            }}>
+              {Array.from({ length: Math.min(Math.max(1, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll)) + 1, 5) }).map((_, index) => (
     <button
       key={index}
       onClick={() => setCurrentSlide(index)}

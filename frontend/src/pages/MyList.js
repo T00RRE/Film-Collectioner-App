@@ -32,7 +32,7 @@ function MyList() {
       console.log(`Pobieranie filmów: watched=${watched}, strona=${currentPage}, limit=${moviesPerPage}`);
       
       const response = await axios.get(
-        `http://localhost:5000/api/movies?watched=${watched}&page=${currentPage}&limit=${moviesPerPage}`
+        `/api/movies?watched=${watched}&page=${currentPage}&limit=${moviesPerPage}`
       );
       
       console.log('Odpowiedź z serwera:', response.data);
@@ -88,13 +88,7 @@ function MyList() {
       alert(`Ocena filmu "${ratingMovie.title}" została zaktualizowana.`);
       closeRatingModal(); // Zamknij okno oceny
       
-      // Jeśli oznaczamy film jako obejrzany, zmień zakładkę na "watched"
-      if (isMarkingAsWatched && activeTab === 'toWatch') {
-        handleTabChange('watched');
-      } else {
-        // W przeciwnym razie po prostu odśwież listę
-        fetchMovies();
-      }
+      
     } catch (err) {
       console.error('Błąd aktualizacji oceny:', err);
       alert('Wystąpił błąd podczas aktualizacji oceny filmu.');
@@ -265,7 +259,7 @@ function MyList() {
     try {
       console.log(`Aktualizacja filmu o ID: ${id}`, updates);
       
-      const response = await axios.put(`http://localhost:5000/api/movies/${id}`, updates);
+      const response = await axios.put(`/api/movies/${id}`, updates);
       console.log('Odpowiedź po aktualizacji:', response.data);
       
       // Sprawdź, czy zmieniliśmy status watched i czy to wymaga zmiany zakładki
@@ -301,7 +295,7 @@ function MyList() {
   const deleteMovie = async (id) => {
     if (window.confirm('Czy na pewno chcesz usunąć ten film z kolekcji?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/movies/${id}`);
+        await axios.delete(`/api/movies/${id}`);
         fetchMovies(); // Odświeżenie listy
         alert('Film został usunięty z kolekcji.');
       } catch (err) {
