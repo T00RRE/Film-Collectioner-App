@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import api, { omdbApi } from '../services/api';
 import useWindowSize from '../hooks/useWindowSize';
 function BrowseMovies() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,7 +27,7 @@ function BrowseMovies() {
   const fetchRecommendedMovies = async () => {
     try {
       setLoadingRecommended(true);
-      const response = await axios.get('/api/omdb/recommended?limit=10');
+      const response = await api.get('/omdb/recommended?limit=10');
       setRecommendedMovies(response.data);
     } catch (err) {
       console.error('Błąd pobierania polecanych filmów:', err);
@@ -43,8 +44,8 @@ function BrowseMovies() {
     setError(null);
 
     try {
-      const response = await axios.get(
-        `/api/omdb/search?title=${encodeURIComponent(searchTerm)}`
+      const response = await api.get(
+        `/omdb/search?title=${encodeURIComponent(searchTerm)}`
       );
       
       if (response.data.Search) {
@@ -79,7 +80,7 @@ function BrowseMovies() {
       console.log('Wysyłane dane:', JSON.stringify(movieData));
 
       // Wywołanie API do dodania filmu
-      await axios.post('/api/movies', movieData);
+      await api.post('/movies', movieData);
       alert(`Film "${movie.Title}" został dodany do Twojej kolekcji jako ${watched ? 'obejrzany' : 'do obejrzenia'}`);
     } catch (err) {
       console.error('Błąd dodawania filmu:', err);
@@ -94,7 +95,7 @@ function BrowseMovies() {
   const showMovieDetails = async (movie) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/omdb/detail/${movie.imdbID}`);
+      const response = await api.get(`/omdb/detail/${movie.imdbID}`);
       setSelectedMovie(response.data);
     } catch (err) {
       console.error('Błąd pobierania szczegółów filmu:', err);

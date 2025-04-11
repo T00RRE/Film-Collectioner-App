@@ -17,7 +17,10 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
-app.use(express.json());
+
+// Obsługa błędów parsowania JSON
+app.use(express.json({ limit: '10mb', strict: false }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Trasy (routes)
 app.use('/api/movies', movieRoutes);
@@ -46,6 +49,21 @@ sequelize.authenticate()
 
 // Obsługa błędów
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Coś poszło nie tak!');
+  console.error('Błąd serwera:', err);
+  
+  // Sprawdź czy jest to błąd XML
+  if (err instanceof SyntaxError) {
+    return res.status(400).json({ message: 'Błąd parsowania' });
+  }
+  
+  // Zwracamy szczegóły błędu w środowisku deweloperskim
+  const errorResponse = {
+    message: 'Coś poszło nie tak!',
+    error: process.env.NODE_ENV === 'development' ? {
+      message: err.message,
+      stack: err.stack
+    } : {}
+  };
+  
+  res.status(500).json(errorResponse);
 });

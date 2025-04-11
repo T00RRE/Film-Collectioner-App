@@ -45,9 +45,12 @@ exports.getOmdbDetail = async (req, res) => {
 };
 // controllers/omdbController.js
 
-// Dodaj tę funkcję do istniejącego kontrolera
+// Pobieranie rekomendowanych filmów z OMDB
 exports.getRecommendedMovies = async (req, res) => {
   try {
+    // Ustaw nagłówki JSON dla odpowiedzi
+    res.setHeader('Content-Type', 'application/json');
+    
     const limit = parseInt(req.query.limit) || 50;
     
     // Lista popularnych filmów (możesz dostosować tę listę)
@@ -71,16 +74,37 @@ exports.getRecommendedMovies = async (req, res) => {
     const selectedMovies = shuffled.slice(0, limit);
     
    // Pobierz dane dla każdego filmu
-const moviesPromises = selectedMovies.map(title => 
-  axios.get(`http://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURIComponent(title)}`)
-);
+    // Dla bezpieczeństwa zastosujmy limitowanie równoległych zapytań
+    const recommendedMovies = [];
     
-    const results = await Promise.all(moviesPromises);
-    const recommendedMovies = results
-      .map(response => response.data)
-      .filter(movie => movie.Response === 'True'); // Filtruj tylko znalezione filmy
-    
-    res.json(recommendedMovies);
+    try {
+      for (const title of selectedMovies) {
+        try {
+          const response = await axios.get(`http://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURIComponent(title)}`);
+          if (response.data && response.data.Response === 'True') {
+            recommendedMovies.push(response.data);
+          }
+        } catch (movieError) {
+          console.error(`Błąd pobierania danych dla filmu ${title}:`, movieError.message);
+          // Kontynuuj z następnym filmem
+        }
+        
+        // Dodaj małe opóźnienie, aby nie przekroczyć limitu zapytań API
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      // Sprawdź czy udało się pobrać jakiekolwiek filmy
+      if (recommendedMovies.length === 0) {
+        return res.status(404).json({ message: 'Nie udało się pobrać żadnych rekomendowanych filmów' });
+      }
+      
+      // Upewnij się, że zwracamy poprawną odpowiedź JSON
+      res.set('Content-Type', 'application/json');
+      return res.send(JSON.stringify(recommendedMovies));
+    } catch (error) {
+      console.error('Błąd w pętli pobierania filmów:', error);
+      return res.status(500).json({ message: 'Wystąpił błąd podczas pobierania rekomendowanych filmów' });
+    }
   } catch (error) {
     console.error('Błąd pobierania polecanych filmów:', error);
     res.status(500).json({ message: 'Błąd serwera przy pobieraniu polecanych filmów' });
