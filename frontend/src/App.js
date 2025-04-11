@@ -9,7 +9,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Zamień istniejący header na nowy komponent Navbar */}
         <Navbar />
         
         <main className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 15px' }}>
@@ -28,7 +27,6 @@ function App() {
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* Efekt blasku na górze stopki */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -39,7 +37,6 @@ function App() {
             zIndex: 1
           }}></div>
           
-          {/* Efekt świecenia */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -95,7 +92,6 @@ function App() {
                  onMouseOut={(e) => {e.currentTarget.style.color = '#f0f0f0'}}>
                 Moja Lista
               </Link>
-              {/* Dodatkowe linki */}
               <a href="#" style={{ 
                 color: '#f0f0f0', 
                 textDecoration: 'none',

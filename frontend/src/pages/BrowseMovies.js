@@ -29,7 +29,6 @@ function BrowseMovies() {
       setLoadingRecommended(true);
       console.log('Wywołuję API po rekomendowane filmy:', `${api.defaults.baseURL}/omdb/recommended?limit=10`);
       
-      // Użyj bezpośrednio axios zamiast api.get
       const response = await axios({
         method: 'get',
         url: 'https://film-collectioner-backend.onrender.com/omdb/recommended?limit=10',
