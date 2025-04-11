@@ -1,7 +1,7 @@
 const { Movie } = require('../models');
 const { Op } = require('sequelize');
 
-// Pobieranie wszystkich filmów z paginacją
+// Pobieranie wszystkich filmów
 exports.getMovies = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -65,14 +65,12 @@ exports.createMovie = async (req, res) => {
   try {
     console.log('📥 Otrzymano żądanie dodania filmu:', JSON.stringify(req.body));
     
-    // Sprawdź, czy film o podanym imdbId już istnieje
     const existingMovie = await Movie.findOne({ where: { imdbId: req.body.imdbId } });
     
     if (existingMovie) {
       return res.status(400).json({ message: 'Film o podanym ID już istnieje w kolekcji' });
     }
     
-    // W PostgreSQL tablice powinny być przechowywane jako JavaScript arrays
     const movieData = {
       ...req.body,
       actors: Array.isArray(req.body.actors) ? req.body.actors : [],

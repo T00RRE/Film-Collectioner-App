@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { moviesApi } from '../services/api';
 
-// Początkowy stan
 const initialState = {
   movies: [],
   movie: null,
@@ -12,7 +11,6 @@ const initialState = {
   total: 0,
 };
 
-// Reducer do zarządzania stanem
 const movieReducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -52,14 +50,11 @@ const movieReducer = (state, action) => {
   }
 };
 
-// Utworzenie kontekstu
 const MovieContext = createContext();
 
-// Provider dla kontekstu
 export const MovieProvider = ({ children }) => {
   const [state, dispatch] = useReducer(movieReducer, initialState);
 
-  // Funkcje do interakcji z API
   const fetchMovies = async (page = 1, limit = 10, sort = '-createdAt', filters = {}) => {
     try {
       dispatch({ type: 'FETCH_REQUEST' });
@@ -136,7 +131,6 @@ export const MovieProvider = ({ children }) => {
   );
 };
 
-// Hook do używania kontekstu
 export const useMovieContext = () => {
   return useContext(MovieContext);
 };

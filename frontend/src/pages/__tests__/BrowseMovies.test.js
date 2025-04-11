@@ -1,10 +1,9 @@
-// src/pages/__tests__/BrowseMovies.test.js - poprawiona wersja
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BrowseMovies from '../BrowseMovies';
 
-// Mock dla useWindowSize
 jest.mock('../../hooks/useWindowSize', () => {
   return {
     __esModule: true,
@@ -12,11 +11,9 @@ jest.mock('../../hooks/useWindowSize', () => {
   };
 });
 
-// Mock dla axios
 jest.mock('axios', () => {
   return {
     get: jest.fn((url) => {
-      // Mockuj dokładną odpowiedź dla każdego URL
       if (url === 'http://localhost:5000/api/omdb/recommended?limit=10') {
         return Promise.resolve({ 
           data: [
@@ -57,14 +54,12 @@ jest.mock('axios', () => {
           }
         });
       }
-      // Domyślna odpowiedź dla nieznanych URL
       return Promise.resolve({ data: {} });
     }),
     post: jest.fn(() => Promise.resolve({ data: { success: true } }))
   };
 });
 
-// Proste testy dla BrowseMovies
 describe('BrowseMovies Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();

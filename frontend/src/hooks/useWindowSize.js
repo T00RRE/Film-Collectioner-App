@@ -1,4 +1,4 @@
-// useWindowSize.js
+
 import { useState, useEffect } from 'react';
 
 function useWindowSize() {
@@ -15,13 +15,10 @@ function useWindowSize() {
       });
     }
     
-    // Dodaj event listener
     window.addEventListener("resize", handleResize);
     
-    // Wywołaj handler od razu, aby ustawić początkowy stan
     handleResize();
     
-    // Usuń event listener przy odmontowaniu
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 

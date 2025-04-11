@@ -8,7 +8,6 @@ function BrowseMovies() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Stany dla polecanych filmów
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [loadingRecommended, setLoadingRecommended] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -19,7 +18,7 @@ function BrowseMovies() {
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const slidesToShow = isMobile ? 1 : isTablet ? 2 : 4;
-  // Dostosuj liczbę przewijanych slajdów dla urządzeń mobilnych
+
   const slidesToScroll = isMobile ? 1 : 1;
   useEffect(() => {
     fetchRecommendedMovies();
@@ -88,7 +87,7 @@ function BrowseMovies() {
 
   const addToMyList = async (movie, watched = false) => {
     try {
-      // Konwersja danych z formatu OMDB na nasz model
+      // Konwersja danych z formatu OMDB
       const movieData = {
         imdbId: movie.imdbID,
         title: movie.Title,
@@ -146,20 +145,15 @@ function BrowseMovies() {
     setSelectedMovie(null);
   };
 
-  // Obsługa slidera
 
 
   const nextSlide = () => {
     setCurrentSlide((prev) => {
-      // Oblicz maksymalną wartość slajdu
       const maxSlide = Math.max(0, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll));
       
-      // Dla urządzeń mobilnych wolniejszy przesuw
       if (isMobile) {
-        // Jeśli jesteśmy na ostatnim slajdzie, wracamy na początek
         return prev >= maxSlide ? 0 : prev + 0.5;
       } else {
-        // Standardowe zachowanie dla desktop
         return prev >= maxSlide ? 0 : prev + 1;
       }
     });
@@ -169,18 +163,15 @@ function BrowseMovies() {
     setCurrentSlide((prev) => {
       const maxSlide = Math.max(0, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll));
       
-      // Dla urządzeń mobilnych wolniejszy przesuw
       if (isMobile) {
-        // Jeśli jesteśmy na pierwszym slajdzie, przechodzimy na koniec
         return prev <= 0 ? maxSlide : prev - 0.5;
       } else {
-        // Standardowe zachowanie dla desktop
         return prev <= 0 ? maxSlide : prev - 1;
       }
     });
   };
 
-  // Funkcja do pobierania koloru gradientu dla każdego polecanego filmu
+  //pobierania koloru gradientu dla każdego polecanego filmu
   const getRandomGradient = (index) => {
     const gradients = [
       'linear-gradient(145deg, rgba(237, 116, 255, 0.3) 0%, rgba(180, 60, 200, 0.4) 100%)',
@@ -276,13 +267,12 @@ function BrowseMovies() {
               <div style={{
                 display: 'flex',
                 transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
-                // Wolniejsza animacja dla urządzeń mobilnych
                 transition: `transform ${isMobile ? '0.8s' : '0.5s'} ${isMobile ? 'cubic-bezier(0.25, 0.1, 0.25, 1)' : 'ease'}`,
                 gap: isMobile ? '15px' : '20px',
                 width: `${recommendedMovies.length * (100 / slidesToShow)}%`,
                 alignItems: 'center',
                 justifyContent: isMobile ? 'center' : 'flex-start',
-                touchAction: 'pan-y', // Lepsze wsparcie dla dotyku
+                touchAction: 'pan-y',
               }}>
                 {recommendedMovies.map((movie, index) => (
                   <div key={movie.imdbID} style={{
@@ -677,7 +667,7 @@ function BrowseMovies() {
               transition: 'all 0.3s ease',
               backdropFilter: 'blur(10px)',
               position: 'relative',
-              transform: 'translateZ(0)' // Aktywuje GPU dla płynniejszych animacji
+              transform: 'translateZ(0)'
             }}>
               {/* Stylizowana krawędź górna */}
               <div style={{

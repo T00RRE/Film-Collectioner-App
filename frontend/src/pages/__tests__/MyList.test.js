@@ -1,11 +1,10 @@
-// src/pages/__tests__/MyList.test.js - poprawiona wersja
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import MyList from '../MyList';
 
-// Mock dla useWindowSize
 jest.mock('../../hooks/useWindowSize', () => {
   return {
     __esModule: true,
@@ -13,7 +12,6 @@ jest.mock('../../hooks/useWindowSize', () => {
   };
 });
 
-// Mock dla axios - uproszczony do tylko podstawowych testów
 jest.mock('axios', () => {
   return {
     get: jest.fn((url) => {
@@ -39,7 +37,6 @@ jest.mock('axios', () => {
   };
 });
 
-// Proste testy dla MyList
 describe('MyList Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -73,11 +70,9 @@ describe('MyList Component', () => {
   test('switches tabs when "Obejrzane" tab is clicked', async () => {
     render(<MyList />);
     
-    // Znajdź i kliknij zakładkę "Obejrzane"
     const watchedButton = await screen.findByText('Obejrzane');
     fireEvent.click(watchedButton);
     
-    // Sprawdź, czy wykonano nowe żądanie API
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('api/movies?watched=true'));
     });

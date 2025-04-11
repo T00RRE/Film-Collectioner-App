@@ -7,9 +7,8 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { width } = useWindowSize();
-  const isMobile = width < 768; // Breakpoint dla urządzeń mobilnych
+  const isMobile = width < 768;
 
-  // Efekt śledzenia przewijania
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -34,7 +33,6 @@ const Navbar = () => {
       transition: 'all 0.3s ease',
       boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.15)' : 'none',
     }}>
-      {/* Tło nawigacji */}
       <div style={{
         width: '100%', 
         height: '70px', 
@@ -46,7 +44,6 @@ const Navbar = () => {
         borderBottom: '1px solid rgba(237, 116, 255, 0.3)',
       }} />
       
-      {/* Logo */}
       <div style={{
         left: isMobile ? '15px' : '30px', 
         top: 0, 
@@ -62,7 +59,6 @@ const Navbar = () => {
         Film <span style={{ color: '#ED74FF' }}>Collector</span>
       </div>
       
-      {/* Przycisk menu mobilnego */}
       {isMobile && (
         <div 
           onClick={toggleMenu}
@@ -102,7 +98,6 @@ const Navbar = () => {
         </div>
       )}
       
-      {/* Nawigacja */}
       <div style={{
         right: isMobile ? 0 : '30px',
         top: isMobile ? (menuOpen ? '70px' : '-100%') : 0,

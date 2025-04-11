@@ -43,17 +43,14 @@ exports.getOmdbDetail = async (req, res) => {
     res.status(500).json({ message: 'Błąd serwera' });
   }
 };
-// controllers/omdbController.js
 
 // Pobieranie rekomendowanych filmów z OMDB
 exports.getRecommendedMovies = async (req, res) => {
   try {
-    // Ustaw nagłówki JSON dla odpowiedzi
     res.setHeader('Content-Type', 'application/json');
     
     const limit = parseInt(req.query.limit) || 50;
     
-    // Lista popularnych filmów (możesz dostosować tę listę)
     const popularMovies = [
       'The Shawshank Redemption', 'The Godfather', 'The Dark Knight', 'Pulp Fiction',
       'Fight Club', 'Forrest Gump', 'Inception', 'The Matrix', 'Goodfellas',
@@ -69,12 +66,10 @@ exports.getRecommendedMovies = async (req, res) => {
       'Her', 'Gone Girl', 'Blade Runner 2049', 'Arrival', 'Nomadland'
     ];
     
-    // Wybierz losowo limit filmów
     const shuffled = [...popularMovies].sort(() => 0.5 - Math.random());
     const selectedMovies = shuffled.slice(0, limit);
     
    // Pobierz dane dla każdego filmu
-    // Dla bezpieczeństwa zastosujmy limitowanie równoległych zapytań
     const recommendedMovies = [];
     
     try {
@@ -86,19 +81,15 @@ exports.getRecommendedMovies = async (req, res) => {
           }
         } catch (movieError) {
           console.error(`Błąd pobierania danych dla filmu ${title}:`, movieError.message);
-          // Kontynuuj z następnym filmem
         }
         
-        // Dodaj małe opóźnienie, aby nie przekroczyć limitu zapytań API
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       
-      // Sprawdź czy udało się pobrać jakiekolwiek filmy
       if (recommendedMovies.length === 0) {
         return res.status(404).json({ message: 'Nie udało się pobrać żadnych rekomendowanych filmów' });
       }
       
-      // Upewnij się, że zwracamy poprawną odpowiedź JSON
       res.set('Content-Type', 'application/json');
       return res.send(JSON.stringify(recommendedMovies));
     } catch (error) {

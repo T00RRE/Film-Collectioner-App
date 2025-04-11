@@ -133,48 +133,40 @@ describe('Film Collector App - Integration Tests', () => {
   });
 
   test('User can search for a movie and add it to their list', async () => {
-    renderApp('/'); // Startujemy od strony głównej
+    renderApp('/'); 
     
-    // Poczekaj na załadowanie strony i znajdź pole wyszukiwania
     const searchInput = await screen.findByPlaceholderText('Wpisz tytuł filmu...');
     await userEvent.type(searchInput, 'Mroczny Rycerz');
     
-    // Wyślij formularz
     const searchForm = searchInput.closest('form');
     fireEvent.submit(searchForm);
     
-    // Poczekaj na wyniki wyszukiwania i sprawdź, czy żądanie API zostało wywołane
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('/api/omdb/search'));
     });
     
-    // Poczekaj na wyświetlenie wyników (sprawdzamy czy pojawia się tytuł filmu)
     await waitFor(() => {
       const movieTitle = screen.getByText('Mroczny Rycerz');
       expect(movieTitle).toBeInTheDocument();
-    }, { timeout: 3000 }); // Zwiększamy timeout na wypadek dłuższego ładowania
+    }, { timeout: 3000 });
   });
 
   test('User can navigate from search results to their list', async () => {
-    renderApp('/'); // Startujemy od strony głównej
+    renderApp('/');
     
-    // Poczekaj na załadowanie strony głównej
     await waitFor(() => {
       const browseHeader = screen.getByRole('heading', { name: /przeglądaj filmy/i });
       expect(browseHeader).toBeInTheDocument();
     });
     
-    // Przejdź do strony "Moja Lista" - w Navbar jest tekst w elemencie div, a nie bezpośrednio
     const myListLink = await screen.findByText('Moja Lista', { selector: 'div' });
     fireEvent.click(myListLink);
     
-    // Poczekaj na załadowanie strony MyList
     await waitFor(() => {
       const myListHeader = screen.getByRole('heading', { name: /moja lista filmów/i });
       expect(myListHeader).toBeInTheDocument();
-    }, { timeout: 3000 }); // Zwiększamy timeout na wypadek dłuższego ładowania
+    }, { timeout: 3000 });
     
-    // Sprawdź, czy wywołano API do pobrania listy filmów
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('/api/movies?watched=false'));
     });
