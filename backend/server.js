@@ -41,8 +41,8 @@ app.use(express.json({ limit: '10mb', strict: false }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Trasy (routes)
-app.use('/api/movies', movieRoutes);
-app.use('/api/omdb', omdbRoutes);
+app.use('/movies', movieRoutes);
+app.use('/omdb', omdbRoutes);
 
 app.get('/', (req, res) => {
   res.send('API Kolekcjonera Filmów działa!');
