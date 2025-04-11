@@ -27,10 +27,28 @@ function BrowseMovies() {
   const fetchRecommendedMovies = async () => {
     try {
       setLoadingRecommended(true);
-      const response = await api.get('/omdb/recommended?limit=10');
+      console.log('Wywołuję API po rekomendowane filmy:', `${api.defaults.baseURL}/omdb/recommended?limit=10`);
+      
+      // Użyj bezpośrednio axios zamiast api.get
+      const response = await axios({
+        method: 'get',
+        url: 'https://film-collectioner-backend.onrender.com/api/omdb/recommended?limit=10',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      
+      console.log('Odpowiedź z API:', response);
       setRecommendedMovies(response.data);
     } catch (err) {
       console.error('Błąd pobierania polecanych filmów:', err);
+      console.log('Szczegóły błędu:', {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data
+      });
     } finally {
       setLoadingRecommended(false);
     }

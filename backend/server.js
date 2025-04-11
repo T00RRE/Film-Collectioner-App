@@ -13,10 +13,19 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'https://film-collectioner-app-1.onrender.com', // URL Twojego frontendu
+  origin: ['https://film-collectioner-app-1.onrender.com', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
+
+// Dodatkowe nagłówki CORS dla wszystkich odpowiedzi
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://film-collectioner-app-1.onrender.com');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 // Obsługa błędów parsowania JSON
 app.use(express.json({ limit: '10mb', strict: false }));

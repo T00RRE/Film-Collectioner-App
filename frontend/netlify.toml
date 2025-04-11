@@ -1,0 +1,14 @@
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/static/js/*"
+  [headers.values]
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/static/css/*"
+  [headers.values]
+    Content-Type = "text/css"

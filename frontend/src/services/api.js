@@ -1,13 +1,24 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://film-collector-backend.onrender.com/api';
+// Sprawdź czy wiadomości diagnostyczne są włączone
+const DEBUG = true;
+
+// Ustaw URL API - sprawdź obie możliwości
+const API_URL = process.env.REACT_APP_API_URL || 'https://film-collectioner-backend.onrender.com/api';
+
+// Pokaż informacje diagnostyczne
+if (DEBUG) {
+  console.log('Using API URL:', API_URL);
+}
 
 // Utworzenie instancji axios z bazowym URL
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json'
   },
+  withCredentials: false  // Zmień na true jeśli potrzebujesz cookies
 });
 
 // API do filmów
