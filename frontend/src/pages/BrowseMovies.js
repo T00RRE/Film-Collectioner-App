@@ -32,7 +32,7 @@ function BrowseMovies() {
       // Użyj bezpośrednio axios zamiast api.get
       const response = await axios({
         method: 'get',
-        url: 'https://film-collectioner-backend.onrender.com/api/omdb/recommended?limit=10',
+        url: 'https://film-collectioner-backend.onrender.com/omdb/recommended?limit=10',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
