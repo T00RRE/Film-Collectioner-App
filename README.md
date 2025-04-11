@@ -56,7 +56,7 @@ Aplikacja jest dostępna online pod adresem: https://film-collectioner-app-1.onr
     bash
     [ ]
     
-    git clone [https://github.com/yourusername/film-collectioner-app.git](https://github.com/T00RRE/Film-Collectioner-App)
+    git clone https://github.com/T00RRE/Film-Collectioner-App.git
     cd film-collectioner-app
     
     ```
