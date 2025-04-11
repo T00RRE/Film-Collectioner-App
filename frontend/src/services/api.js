@@ -11,6 +11,32 @@ if (DEBUG) {
   console.log('Using API URL:', API_URL);
 }
 
+// Sprawdzanie URL API przy starcie aplikacji
+if (DEBUG) {
+  (async () => {
+    try {
+      console.log('Testowanie połączenia z API...');
+      const testEndpoint = `${API_URL.replace(/\/api$/, '')}`;
+      console.log('Testuję endpoint:', testEndpoint);
+      
+      const response = await fetch(testEndpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      console.log('Status połączenia:', response.status, response.ok ? 'OK' : 'Błąd');
+      if (response.ok) {
+        const text = await response.text();
+        console.log('Odpowiedź API:', text.substring(0, 100) + '...');
+      }
+    } catch (error) {
+      console.error('Błąd połączenia z API:', error.message);
+    }
+  })();
+}
+
 // Utworzenie instancji axios z bazowym URL
 const api = axios.create({
   baseURL: API_URL,

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../services/api';
 import useWindowSize from '../hooks/useWindowSize';
 
 function MyList() {
@@ -30,10 +31,17 @@ function MyList() {
     try {
       const watched = activeTab === 'watched';
       console.log(`Pobieranie filmów: watched=${watched}, strona=${currentPage}, limit=${moviesPerPage}`);
+      console.log('URL API:', api.defaults.baseURL);
       
-      const response = await axios.get(
-        `/api/movies?watched=${watched}&page=${currentPage}&limit=${moviesPerPage}`
-      );
+      // Użyj bezpośrednio axios z pełną ścieżką
+      const response = await axios({
+        method: 'get',
+        url: `${api.defaults.baseURL}/movies?watched=${watched}&page=${currentPage}&limit=${moviesPerPage}`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
       
       console.log('Odpowiedź z serwera:', response.data);
       
@@ -259,7 +267,15 @@ function MyList() {
     try {
       console.log(`Aktualizacja filmu o ID: ${id}`, updates);
       
-      const response = await axios.put(`/api/movies/${id}`, updates);
+      const response = await axios({
+        method: 'put',
+        url: `${api.defaults.baseURL}/movies/${id}`,
+        data: updates,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
       console.log('Odpowiedź po aktualizacji:', response.data);
       
       // Sprawdź, czy zmieniliśmy status watched i czy to wymaga zmiany zakładki
@@ -295,7 +311,14 @@ function MyList() {
   const deleteMovie = async (id) => {
     if (window.confirm('Czy na pewno chcesz usunąć ten film z kolekcji?')) {
       try {
-        await axios.delete(`/api/movies/${id}`);
+        await axios({
+          method: 'delete',
+          url: `${api.defaults.baseURL}/movies/${id}`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
         fetchMovies(); // Odświeżenie listy
         alert('Film został usunięty z kolekcji.');
       } catch (err) {

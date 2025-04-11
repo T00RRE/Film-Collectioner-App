@@ -62,9 +62,14 @@ function BrowseMovies() {
     setError(null);
 
     try {
-      const response = await api.get(
-        `/omdb/search?title=${encodeURIComponent(searchTerm)}`
-      );
+      const response = await axios({
+        method: 'get',
+        url: `${api.defaults.baseURL}/omdb/search?title=${encodeURIComponent(searchTerm)}`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
       
       if (response.data.Search) {
         setMovies(response.data.Search);
@@ -98,7 +103,15 @@ function BrowseMovies() {
       console.log('Wysyłane dane:', JSON.stringify(movieData));
 
       // Wywołanie API do dodania filmu
-      await api.post('/movies', movieData);
+      await axios({
+        method: 'post',
+        url: `${api.defaults.baseURL}/movies`,
+        data: movieData,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
       alert(`Film "${movie.Title}" został dodany do Twojej kolekcji jako ${watched ? 'obejrzany' : 'do obejrzenia'}`);
     } catch (err) {
       console.error('Błąd dodawania filmu:', err);
@@ -113,7 +126,14 @@ function BrowseMovies() {
   const showMovieDetails = async (movie) => {
     try {
       setLoading(true);
-      const response = await api.get(`/omdb/detail/${movie.imdbID}`);
+      const response = await axios({
+        method: 'get',
+        url: `${api.defaults.baseURL}/omdb/detail/${movie.imdbID}`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
       setSelectedMovie(response.data);
     } catch (err) {
       console.error('Błąd pobierania szczegółów filmu:', err);
