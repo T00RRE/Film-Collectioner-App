@@ -19,7 +19,8 @@ function BrowseMovies() {
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const slidesToShow = isMobile ? 1 : isTablet ? 2 : 4;
-  const slidesToScroll = 1;
+  // Dostosuj liczbę przewijanych slajdów dla urządzeń mobilnych
+  const slidesToScroll = isMobile ? 1 : 1;
   useEffect(() => {
     fetchRecommendedMovies();
   }, []);
@@ -150,15 +151,32 @@ function BrowseMovies() {
 
   const nextSlide = () => {
     setCurrentSlide((prev) => {
+      // Oblicz maksymalną wartość slajdu
       const maxSlide = Math.max(0, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll));
-      return prev >= maxSlide ? 0 : prev + 1;
+      
+      // Dla urządzeń mobilnych wolniejszy przesuw
+      if (isMobile) {
+        // Jeśli jesteśmy na ostatnim slajdzie, wracamy na początek
+        return prev >= maxSlide ? 0 : prev + 0.5;
+      } else {
+        // Standardowe zachowanie dla desktop
+        return prev >= maxSlide ? 0 : prev + 1;
+      }
     });
   };
 
   const prevSlide = () => {
     setCurrentSlide((prev) => {
       const maxSlide = Math.max(0, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll));
-      return prev <= 0 ? maxSlide : prev - 1;
+      
+      // Dla urządzeń mobilnych wolniejszy przesuw
+      if (isMobile) {
+        // Jeśli jesteśmy na pierwszym slajdzie, przechodzimy na koniec
+        return prev <= 0 ? maxSlide : prev - 0.5;
+      } else {
+        // Standardowe zachowanie dla desktop
+        return prev <= 0 ? maxSlide : prev - 1;
+      }
     });
   };
 
@@ -258,11 +276,13 @@ function BrowseMovies() {
               <div style={{
                 display: 'flex',
                 transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
-                transition: 'transform 0.5s ease',
-                gap: isMobile ? '20px' : '20px',
+                // Wolniejsza animacja dla urządzeń mobilnych
+                transition: `transform ${isMobile ? '0.8s' : '0.5s'} ${isMobile ? 'cubic-bezier(0.25, 0.1, 0.25, 1)' : 'ease'}`,
+                gap: isMobile ? '15px' : '20px',
                 width: `${recommendedMovies.length * (100 / slidesToShow)}%`,
                 alignItems: 'center',
                 justifyContent: isMobile ? 'center' : 'flex-start',
+                touchAction: 'pan-y', // Lepsze wsparcie dla dotyku
               }}>
                 {recommendedMovies.map((movie, index) => (
                   <div key={movie.imdbID} style={{
