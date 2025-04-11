@@ -530,6 +530,7 @@ function BrowseMovies() {
               justifyContent: 'center',
               gap: '8px',
               marginTop: '20px',
+              marginBottom: '40px',
               flexWrap: 'wrap'
             }}>
               {Array.from({ length: Math.min(Math.max(1, Math.ceil((recommendedMovies.length - slidesToShow) / slidesToScroll)) + 1, 5) }).map((_, index) => (

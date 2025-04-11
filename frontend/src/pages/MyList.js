@@ -20,11 +20,11 @@ function MyList() {
   // Stany dla paginacji
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [moviesPerPage] = useState(4); // Możesz dostosować liczbę filmów na stronie
+  const [moviesPerPage] = useState(4);
 
   useEffect(() => {
     fetchMovies();
-  }, [activeTab, currentPage]); // Dodaj currentPage jako zależność
+  }, [activeTab, currentPage]);
 
   const fetchMovies = async () => {
     setLoading(true);
@@ -33,7 +33,6 @@ function MyList() {
       console.log(`Pobieranie filmów: watched=${watched}, strona=${currentPage}, limit=${moviesPerPage}`);
       console.log('URL API:', api.defaults.baseURL);
       
-      // Użyj bezpośrednio axios z pełną ścieżką
       const response = await axios({
         method: 'get',
         url: `${api.defaults.baseURL}/movies?watched=${watched}&page=${currentPage}&limit=${moviesPerPage}`,
@@ -66,35 +65,32 @@ function MyList() {
     }
   };
 
-  // Funkcja otwierająca okno oceny dla filmu
   const openRatingModal = (movie) => {
     setRatingMovie(movie);
-    setRating(movie.userRating || 5); // Ustaw aktualną ocenę lub domyślną
-    setReview(movie.notes || ''); // Ustaw aktualną recenzję lub pustą
+    setRating(movie.userRating || 5);
+    setReview(movie.notes || '');
   };
 
-  // Funkcja zamykająca okno oceny
   const closeRatingModal = () => {
     setRatingMovie(null);
   };
 
-  // Funkcja do zapisywania oceny i recenzji
+  //zapisywania oceny i recenzji
   const saveRating = async () => {
     if (!ratingMovie) return;
     
     try {
-      // Sprawdź, czy zmieniamy status filmu na obejrzany
       const isMarkingAsWatched = !ratingMovie.watched && ratingMovie.watched !== true;
       
-      // Aktualizacja filmu - upewnij się, że parametr watched jest ustawiony na true
+      // Aktualizacja filmu
       await updateMovie(ratingMovie.id, {
         userRating: rating,
         notes: review,
-        watched: true // Zawsze ustaw na true przy zapisie oceny
+        watched: true
       });
       
       alert(`Ocena filmu "${ratingMovie.title}" została zaktualizowana.`);
-      closeRatingModal(); // Zamknij okno oceny
+      closeRatingModal(); 
       
       
     } catch (err) {
@@ -128,17 +124,14 @@ function MyList() {
     }
   };
   
-  // Funkcja do wyświetlania szczegółów filmu
   const showMovieDetails = (movie) => {
     setSelectedMovie(movie);
   };
 
-  // Funkcja do zamykania modalu ze szczegółami
   const closeMovieDetails = () => {
     setSelectedMovie(null);
   };
 
-  // Renderowanie gwiazdek oceny
   const renderStars = () => {
     const stars = [];
     for (let i = 1; i <= 10; i++) {
@@ -162,7 +155,6 @@ function MyList() {
     return stars;
   };
 
-  // Renderowanie gwiazdek tylko do wyświetlania (bez interakcji)
   const renderDisplayStars = (value) => {
     const stars = [];
     for (let i = 1; i <= 10; i++) {
@@ -182,7 +174,6 @@ function MyList() {
     return stars;
   };
 
-  // Komponenty kontrolek paginacji
   const renderPagination = () => {
     if (totalPages <= 1) return null;
 
@@ -209,10 +200,8 @@ function MyList() {
           &laquo; Poprzednia
         </button>
         
-        {/* Przyciski stron */}
         {Array.from({ length: totalPages }, (_, i) => i + 1)
           .filter(page => {
-            // Pokaż tylko bieżącą stronę i sąsiednie (max 5 przycisków)
             return page === 1 || 
                    page === totalPages || 
                    Math.abs(page - currentPage) <= 1 ||
@@ -220,7 +209,6 @@ function MyList() {
                    (page === totalPages - 1 && currentPage === totalPages);
           })
           .map((page, index, array) => {
-            // Dodaj wielokropek, jeśli są luki w numeracji
             const showEllipsis = index > 0 && page - array[index - 1] > 1;
             
             return (
@@ -349,7 +337,8 @@ function MyList() {
         fontSize: '28px', 
         fontWeight: 'bold', 
         marginBottom: '25px', 
-        color: '#f0f0f0', 
+        color: '#f0f0f0',
+        marginTop: '100px',
         textAlign: 'center',
         textShadow: '0 2px 4px rgba(0,0,0,0.3)'
       }}>
